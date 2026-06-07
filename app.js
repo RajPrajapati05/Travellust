@@ -1,3 +1,5 @@
+process.on('uncaughtException', (err) => console.error('Uncaught:', err));
+process.on('unhandledRejection', (err) => console.error('Unhandled:', err));
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
