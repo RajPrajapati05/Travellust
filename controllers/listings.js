@@ -112,7 +112,7 @@ module.exports.createListing = async (req, res, next) => {
   await newListing.save();
 
   // Send listing confirmation email
-  await mailer.sendListingEmail(req.user.email, req.user.username, newListing);
+ mailer.sendListingEmail(req.user.email, req.user.username, newListing).catch(console.error);
 
   req.flash("success", "New Listing Created!");
   res.redirect("/listings");

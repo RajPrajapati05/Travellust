@@ -12,20 +12,19 @@ module.exports.signup = async (req, res, next) => {
     const newUser = new User({ email, username });
     const registeredUser = await User.register(newUser, password);
 
-    try {
-      await mailer.sendWelcomeEmail(email, username);
-    } catch (mailErr) {
+    // Fire and forget - don't await email
+    mailer.sendWelcomeEmail(email, username).catch((mailErr) => {
       console.log("Email error:", mailErr.message);
-    }
+    });
 
     req.login(registeredUser, (err) => {
       if (err) return next(err);
       req.flash("success", "Welcome to Travellust!");
-      res.redirect("/listings");
+      return res.redirect("/listings");
     });
   } catch (e) {
     req.flash("error", e.message);
-    res.redirect("/signup");
+    return res.redirect("/signup");
   }
 };
 
