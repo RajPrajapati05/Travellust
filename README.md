@@ -12,14 +12,14 @@
 
 ## 🌍 Live Demo
 
-👉 https://travellust-c2wy.onrender.com
+👉 https://travellust-naa9.onrender.com
 
 ---
 
 ## 📸 Screenshots
 
 | Homepage | Listing Detail | AI Chatbot |
-|----------|---------------|------------|
+|----------|----------------|------------|
 | Hero banner with search | Booking form + Map | Trip Planner |
 
 ---
@@ -31,7 +31,7 @@
 - 🔍 **Smart Search** — Search by title, location, country or description
 - 🔥 **Filter by Category** — Trending, Rooms, Mountain, Castles, Camping, Farms, Arctic, Domes
 - 👤 **Authentication** — Signup, Login, Logout with Passport.js
-- 🏡 **Add Listings** — Create your own listing with image upload
+- 🏡 **Add Listings** — Create your own listing with multiple image uploads
 - ✏️ **Edit/Delete** — Owners can edit or delete their listings
 - ⭐ **Reviews** — Leave star ratings and comments on listings
 - 🗺️ **Interactive Map** — MapTiler map shows listing location
@@ -240,7 +240,10 @@ travellust/
 │   │   └── edit.ejs          # Edit listing form
 │   └── users/
 │       ├── login.ejs         # Login page
-│       └── signup.ejs        # Signup page
+│       ├── signup.ejs        # Signup page
+│       ├── profile.ejs       # User profile page
+│       ├── editProfile.ejs   # Edit profile form
+│       └── dashboard.ejs     # User dashboard
 ├── public/
 │   ├── css/
 │   │   ├── style.css         # Custom styles
