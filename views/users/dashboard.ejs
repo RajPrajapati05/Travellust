@@ -1,0 +1,487 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+.dashboard-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Header */
+.dash-header {
+  background: linear-gradient(135deg, #fe424d 0%, #ff6b35 100%);
+  border-radius: 20px;
+  padding: 2.5rem;
+  color: white;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dash-header-left h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+  font-family: 'Syne', sans-serif;
+}
+
+.dash-header-left p {
+  opacity: 0.88;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.dash-header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.dash-btn-white {
+  background: white;
+  color: #fe424d;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dash-btn-white:hover {
+  background: #fff0f1;
+  color: #fe424d;
+  transform: translateY(-1px);
+}
+
+.dash-btn-outline {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1.5px solid rgba(255,255,255,0.5);
+  border-radius: 10px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dash-btn-outline:hover {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media(max-width: 640px) { .stats-grid { grid-template-columns: 1fr; } }
+
+.stat-card {
+  background: white;
+  border: 1.5px solid #ebebeb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.stat-card:hover {
+  border-color: #fe424d;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(254,66,77,0.1);
+}
+
+.stat-card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.stat-card-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fe424d;
+  font-family: 'Syne', sans-serif;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.stat-card-label {
+  font-size: 0.8rem;
+  color: #717171;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Section */
+.dash-section {
+  margin-bottom: 2rem;
+}
+
+.dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.dash-section-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #222;
+  font-family: 'Syne', sans-serif;
+}
+
+/* Listing card */
+.listing-dash-card {
+  background: white;
+  border: 1.5px solid #ebebeb;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s;
+}
+
+.listing-dash-card:hover {
+  border-color: #fe424d;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.listing-dash-top {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.listing-dash-img {
+  width: 90px;
+  height: 72px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.listing-dash-info {
+  flex: 1;
+}
+
+.listing-dash-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #222;
+  margin-bottom: 0.2rem;
+}
+
+.listing-dash-meta {
+  font-size: 0.82rem;
+  color: #717171;
+  margin-bottom: 0.4rem;
+}
+
+.listing-dash-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.listing-dash-stat {
+  font-size: 0.8rem;
+  color: #717171;
+  background: #f7f7f7;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.listing-dash-stat strong { color: #222; }
+
+.listing-dash-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.dash-action-btn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1.5px solid;
+  cursor: pointer;
+}
+
+.dash-action-btn.view { border-color: #222; color: #222; background: white; }
+.dash-action-btn.view:hover { background: #222; color: white; }
+
+.dash-action-btn.edit { border-color: #717171; color: #717171; background: white; }
+.dash-action-btn.edit:hover { background: #717171; color: white; }
+
+.dash-action-btn.delete { border-color: #fe424d; color: #fe424d; background: white; }
+.dash-action-btn.delete:hover { background: #fe424d; color: white; }
+
+/* Bookings */
+.bookings-list { }
+
+.booking-card {
+  background: white;
+  border: 1.5px solid #ebebeb;
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #fe424d;
+  transition: all 0.2s;
+}
+
+.booking-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.booking-card-header {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #222;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.booking-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.booking-detail {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+}
+
+.booking-detail-label {
+  font-size: 0.72rem;
+  color: #717171;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.booking-detail-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.booking-detail-value.price { color: #fe424d; }
+
+/* Empty state */
+.empty-dash {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #717171;
+  background: #fafafa;
+  border-radius: 14px;
+  border: 1.5px dashed #ebebeb;
+}
+
+.empty-dash h5 { color: #222; margin-bottom: 0.5rem; }
+
+/* Dark mode */
+body.dark-mode .stat-card,
+body.dark-mode .listing-dash-card,
+body.dark-mode .booking-card {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-mode .stat-card:hover,
+body.dark-mode .listing-dash-card:hover { border-color: #fe424d !important; }
+
+body.dark-mode .stat-card-label,
+body.dark-mode .listing-dash-meta { color: #94a3b8 !important; }
+
+body.dark-mode .listing-dash-title,
+body.dark-mode .dash-section-title,
+body.dark-mode .booking-card-header,
+body.dark-mode .booking-detail-value { color: #e2e8f0 !important; }
+
+body.dark-mode .listing-dash-stat { background: #0f172a !important; }
+body.dark-mode .listing-dash-stat strong { color: #e2e8f0 !important; }
+body.dark-mode .booking-detail { background: #0f172a !important; }
+body.dark-mode .booking-detail-label { color: #94a3b8 !important; }
+body.dark-mode .empty-dash { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .empty-dash h5 { color: #e2e8f0 !important; }
+
+body.dark-mode .dash-action-btn.view { border-color: #e2e8f0 !important; color: #e2e8f0 !important; background: transparent !important; }
+body.dark-mode .dash-action-btn.view:hover { background: #e2e8f0 !important; color: #0f172a !important; }
+body.dark-mode .dash-action-btn.edit { border-color: #94a3b8 !important; color: #94a3b8 !important; background: transparent !important; }
+</style>
+
+<div class="dashboard-page">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <h2>👋 Welcome, <%= currUser.username %>!</h2>
+      <p>Here's an overview of your listings and bookings</p>
+    </div>
+    <div class="dash-header-actions">
+      <a href="/listings/new" class="dash-btn-white">
+        ➕ Add New Listing
+      </a>
+      <a href="/listings" class="dash-btn-outline">
+        🏠 View All
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-icon">🏠</div>
+      <div class="stat-card-number"><%= totalListings %></div>
+      <div class="stat-card-label">Total Listings</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">📅</div>
+      <div class="stat-card-number"><%= totalBookings %></div>
+      <div class="stat-card-label">Total Bookings</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">💰</div>
+      <div class="stat-card-number">₹<%= totalEarnings.toLocaleString("en-IN") %></div>
+      <div class="stat-card-label">Total Earnings</div>
+    </div>
+  </div>
+
+  <!-- My Listings -->
+  <div class="dash-section">
+    <div class="dash-section-header">
+      <h3 class="dash-section-title">🏠 My Listings</h3>
+      <a href="/listings/new" style="font-size:0.85rem; color:#fe424d; text-decoration:none; font-weight:600;">+ Add new</a>
+    </div>
+
+    <% if(listingsWithBookings.length === 0) { %>
+      <div class="empty-dash">
+        <div style="font-size:2.5rem; margin-bottom:0.75rem;">🏠</div>
+        <h5>No listings yet</h5>
+        <p>Add your first listing to start hosting!</p>
+        <a href="/listings/new" style="color:#fe424d; font-weight:600; text-decoration:none;">+ Add listing</a>
+      </div>
+    <% } %>
+
+    <% for(let item of listingsWithBookings) { %>
+      <div class="listing-dash-card">
+        <div class="listing-dash-top">
+          <img src="<%= item.listing.image.url %>" class="listing-dash-img" alt="listing">
+          <div class="listing-dash-info">
+            <div class="listing-dash-title"><%= item.listing.title %></div>
+            <div class="listing-dash-meta">
+              📍 <%= item.listing.location %>, <%= item.listing.country %>
+            </div>
+            <div class="listing-dash-stats">
+              <span class="listing-dash-stat">
+                💰 <strong>₹<%= item.listing.price.toLocaleString("en-IN") %></strong>/night
+              </span>
+              <span class="listing-dash-stat">
+                📅 <strong><%= item.bookings.length %></strong> booking(s)
+              </span>
+              <span class="listing-dash-stat">
+                💵 Earned: <strong style="color:#fe424d;">₹<%= item.earnings.toLocaleString("en-IN") %></strong>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="listing-dash-actions">
+          <a href="/listings/<%= item.listing._id %>" class="dash-action-btn view">👁️ View</a>
+          <a href="/listings/<%= item.listing._id %>/edit" class="dash-action-btn edit">✏️ Edit</a>
+          <form method="post" action="/listings/<%= item.listing._id %>?_method=DELETE" style="display:inline;"
+            onsubmit="return confirm('Delete this listing?')">
+            <button type="submit" class="dash-action-btn delete">🗑️ Delete</button>
+          </form>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- All Bookings -->
+  <div class="dash-section">
+    <div class="dash-section-header">
+      <h3 class="dash-section-title">📅 Bookings on My Properties</h3>
+    </div>
+
+    <%
+      let hasAnyBooking = false;
+      for(let item of listingsWithBookings) {
+        if(item.bookings.length > 0) { hasAnyBooking = true; break; }
+      }
+    %>
+
+    <% if(!hasAnyBooking) { %>
+      <div class="empty-dash">
+        <div style="font-size:2.5rem; margin-bottom:0.75rem;">📅</div>
+        <h5>No bookings yet</h5>
+        <p>When guests book your listings, they'll appear here</p>
+      </div>
+    <% } %>
+
+    <% for(let item of listingsWithBookings) { %>
+      <% for(let booking of item.bookings) { %>
+        <%
+          const checkIn = new Date(booking.checkIn);
+          const checkOut = new Date(booking.checkOut);
+          const nights = Math.ceil((checkOut - checkIn) / (1000*60*60*24));
+        %>
+        <div class="booking-card">
+          <div class="booking-card-header">
+            🏠 <%= item.listing.title %>
+          </div>
+          <div class="booking-details-grid">
+            <div class="booking-detail">
+              <div class="booking-detail-label">👤 Booked by</div>
+              <div class="booking-detail-value">Guest</div>
+            </div>
+            <div class="booking-detail">
+              <div class="booking-detail-label">📅 Check In</div>
+              <div class="booking-detail-value"><%= checkIn.toDateString() %></div>
+            </div>
+            <div class="booking-detail">
+              <div class="booking-detail-label">📅 Check Out</div>
+              <div class="booking-detail-value"><%= checkOut.toDateString() %></div>
+            </div>
+            <div class="booking-detail">
+              <div class="booking-detail-label">🌙 Nights</div>
+              <div class="booking-detail-value"><%= nights %> night(s)</div>
+            </div>
+            <div class="booking-detail">
+              <div class="booking-detail-label">💰 Total</div>
+              <div class="booking-detail-value price">₹<%= booking.totalPrice ? booking.totalPrice.toLocaleString("en-IN") : 0 %></div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+
+</div>

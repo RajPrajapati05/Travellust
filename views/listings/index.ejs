@@ -1,0 +1,380 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+* { font-family: 'DM Sans', sans-serif; }
+h1,h2,h3,h4,h5,h6 { font-family: 'Syne', sans-serif; }
+
+/* ── FILTERS ── */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  border-bottom: 1px solid #ebebeb;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: white;
+  position: sticky;
+  top: 80px;
+  z-index: 100;
+  gap: 0;
+}
+
+.filters-bar::-webkit-scrollbar { display: none; }
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 1.25rem 0.75rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: #717171;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  min-width: 70px;
+}
+
+.filter-item:hover { color: #222; border-bottom-color: #ddd; }
+.filter-item.active { color: #222; border-bottom-color: #222; }
+.filter-item i { font-size: 1.3rem; }
+.filter-item p { font-size: 0.72rem; font-weight: 600; margin: 0; white-space: nowrap; }
+
+.filter-divider {
+  width: 1px; height: 30px;
+  background: #ebebeb;
+  flex-shrink: 0; margin: 0 0.5rem;
+}
+
+.tax-pill {
+  display: flex; align-items: center; gap: 0.5rem;
+  border: 1px solid #222; border-radius: 8px;
+  padding: 0.5rem 0.75rem; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  margin-left: auto; color: #222; background: white;
+  transition: all 0.2s;
+}
+
+.tax-pill:hover { background: #f7f7f7; }
+.tax-pill.active { background: #222; color: white; }
+
+/* ── MAIN ── */
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ── STATS ── */
+.stats-row {
+  display: flex; gap: 2rem; margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem; background: #fafafa;
+  border-radius: 12px; border: 1px solid #ebebeb;
+  flex-wrap: wrap;
+}
+
+.stat-item { display: flex; align-items: center; gap: 0.75rem; }
+.stat-icon { font-size: 1.4rem; }
+.stat-info strong {
+  display: block; font-size: 1.1rem; font-weight: 800;
+  color: #fe424d; font-family: 'Syne', sans-serif; line-height: 1;
+}
+.stat-info span {
+  font-size: 0.75rem; color: #717171; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+
+/* ── RESULT BANNER ── */
+.result-banner {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1.5rem; padding: 0.75rem 1rem;
+  background: #fff8f8; border-radius: 10px;
+  border: 1px solid #ffd5d5;
+}
+
+.result-banner h6 { margin: 0; font-size: 0.9rem; font-weight: 600; color: #222; }
+
+.clear-btn {
+  margin-left: auto; background: none; border: 1px solid #ddd;
+  border-radius: 6px; padding: 0.25rem 0.75rem; font-size: 0.8rem;
+  cursor: pointer; text-decoration: none; color: #222; font-weight: 500;
+  transition: background 0.2s;
+}
+
+.clear-btn:hover { background: #f7f7f7; color: #222; }
+
+/* ── GRID ── */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.5rem 1.25rem;
+}
+
+.listing-card-wrapper {
+  text-decoration: none; color: inherit; display: block;
+}
+
+.listing-card-airbnb {
+  border-radius: 16px; overflow: hidden; transition: transform 0.25s;
+}
+
+.listing-card-airbnb:hover { transform: scale(1.01); }
+
+.listing-img-wrapper {
+  position: relative; border-radius: 16px; overflow: hidden;
+  aspect-ratio: 4/3; background: #f7f7f7;
+}
+
+.listing-img-wrapper img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.listing-card-airbnb:hover .listing-img-wrapper img { transform: scale(1.04); }
+
+/* Heart button */
+.wishlist-btn {
+  position: absolute; top: 0.75rem; right: 0.75rem;
+  background: none; border: none; cursor: pointer;
+  font-size: 1.3rem; padding: 0; line-height: 1;
+  transition: transform 0.2s;
+  z-index: 2;
+}
+
+.wishlist-btn:hover { transform: scale(1.2); }
+
+.wishlist-btn .heart-outline { color: white; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+.wishlist-btn .heart-filled { color: #fe424d; display: none; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+.wishlist-btn.active .heart-outline { display: none; }
+.wishlist-btn.active .heart-filled { display: inline; }
+
+/* Listing info */
+.listing-info { padding: 0.85rem 0 0; }
+
+.listing-info-top {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 0.5rem;
+}
+
+.listing-title {
+  font-size: 0.92rem; font-weight: 600; color: #222; line-height: 1.3; flex: 1;
+}
+
+.listing-rating {
+  display: flex; align-items: center; gap: 0.25rem;
+  font-size: 0.82rem; font-weight: 500; color: #222; flex-shrink: 0;
+}
+
+.listing-location-text { font-size: 0.85rem; color: #717171; margin: 0.2rem 0; }
+
+.listing-price-text { font-size: 0.9rem; color: #222; margin-top: 0.3rem; }
+.listing-price-text strong { font-weight: 700; }
+
+.tax-info {
+  display: none;
+  color: #717171;
+  font-size: 0.82rem;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 5rem 2rem; grid-column: 1/-1;
+}
+
+/* Dark mode */
+body.dark-mode .filters-bar { background: #0f172a !important; border-bottom-color: #1e293b !important; }
+body.dark-mode .filter-item { color: #94a3b8 !important; }
+body.dark-mode .filter-item:hover,
+body.dark-mode .filter-item.active { color: #e2e8f0 !important; border-bottom-color: #e2e8f0 !important; }
+body.dark-mode .tax-pill { border-color: #334155 !important; color: #e2e8f0 !important; background: #1e293b !important; }
+body.dark-mode .tax-pill.active { background: #e2e8f0 !important; color: #0f172a !important; }
+body.dark-mode .stats-row { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .listing-title,
+body.dark-mode .listing-price-text { color: #e2e8f0 !important; }
+body.dark-mode .listing-location-text,
+body.dark-mode .listing-rating { color: #94a3b8 !important; }
+body.dark-mode .result-banner { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .result-banner h6 { color: #e2e8f0 !important; }
+body.dark-mode .clear-btn { border-color: #334155 !important; color: #e2e8f0 !important; }
+body.dark-mode .main-content { background: #0f172a !important; }
+
+/* Responsive */
+@media(max-width: 768px) {
+  .listings-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+  .main-content { padding: 1rem; }
+  .filters-bar { padding: 0 1rem; }
+}
+</style>
+
+<!-- Filters Bar -->
+<div class="filters-bar">
+  <a href="/listings?filter=trending" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'trending') ? 'active' : '' %>">
+    <i class="fa-solid fa-fire"></i><p>Trending</p>
+  </a>
+  <a href="/listings?filter=rooms" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'rooms') ? 'active' : '' %>">
+    <i class="fa-solid fa-bed"></i><p>Rooms</p>
+  </a>
+  <a href="/listings?filter=city" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'city') ? 'active' : '' %>">
+    <i class="fa-solid fa-mountain-city"></i><p>Iconic Cities</p>
+  </a>
+  <a href="/listings?filter=mountain" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'mountain') ? 'active' : '' %>">
+    <i class="fa-solid fa-mountain"></i><p>Mountain</p>
+  </a>
+  <a href="/listings?filter=castle" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'castle') ? 'active' : '' %>">
+    <i class="fa-brands fa-fort-awesome"></i><p>Castles</p>
+  </a>
+  <a href="/listings?filter=pool" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'pool') ? 'active' : '' %>">
+    <i class="fa-solid fa-person-swimming"></i><p>Amazing Pools</p>
+  </a>
+  <a href="/listings?filter=camping" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'camping') ? 'active' : '' %>">
+    <i class="fa-solid fa-campground"></i><p>Camping</p>
+  </a>
+  <a href="/listings?filter=farm" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'farm') ? 'active' : '' %>">
+    <i class="fa-solid fa-cow"></i><p>Farms</p>
+  </a>
+  <a href="/listings?filter=arctic" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'arctic') ? 'active' : '' %>">
+    <i class="fa-solid fa-snowflake"></i><p>Arctic</p>
+  </a>
+  <a href="/listings?filter=dome" class="filter-item <%= (typeof filter !== 'undefined' && filter === 'dome') ? 'active' : '' %>">
+    <i class="fa-solid fa-igloo"></i><p>Domes</p>
+  </a>
+
+  <div class="filter-divider"></div>
+
+  <button class="tax-pill" id="taxToggle">
+    <i class="fa-solid fa-tag" style="font-size:0.85rem;"></i>
+    Display total after taxes
+  </button>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- Stats (homepage only) -->
+  <% if (!search && !filter) { %>
+  <div class="stats-row">
+    <div class="stat-item">
+      <span class="stat-icon">🏠</span>
+      <div class="stat-info">
+        <strong><%= totalListings %>+</strong>
+        <span>Listings</span>
+      </div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">🌍</span>
+      <div class="stat-info">
+        <strong><%= totalCountries %>+</strong>
+        <span>Countries</span>
+      </div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">👥</span>
+      <div class="stat-info">
+        <strong><%= totalUsers %>+</strong>
+        <span>Travelers</span>
+      </div>
+    </div>
+    <div class="stat-item" style="margin-left:auto;">
+      <span style="font-size:0.85rem; color:#717171;">
+        🤖 Try our <a href="#" onclick="document.getElementById('chat-toggle').click(); return false;" style="color:#fe424d; font-weight:600; text-decoration:none;">AI Trip Planner</a>
+      </span>
+    </div>
+  </div>
+  <% } %>
+
+  <!-- Result banners -->
+  <% if (typeof filter !== 'undefined' && filter) { %>
+    <div class="result-banner">
+      <i class="fa-solid fa-filter" style="color:#fe424d;"></i>
+      <h6>Showing: "<%= filter %>" listings</h6>
+      <a href="/listings" class="clear-btn">✕ Clear</a>
+    </div>
+  <% } %>
+
+  <% if (typeof search !== 'undefined' && search) { %>
+    <div class="result-banner">
+      <i class="fa-solid fa-magnifying-glass" style="color:#fe424d;"></i>
+      <h6>Results for "<%= search %>"</h6>
+      <a href="/listings" class="clear-btn">✕ Clear</a>
+    </div>
+  <% } %>
+
+  <!-- Listings Grid -->
+  <div class="listings-grid">
+    <% if(allListings.length === 0) { %>
+      <div class="empty-state">
+        <div style="font-size:3rem; margin-bottom:1rem;">😔</div>
+        <h3>No listings found</h3>
+        <p style="color:#717171; margin-bottom:1.5rem;">Try adjusting your search or filters</p>
+        <a href="/listings" class="btn btn-dark">Browse all listings</a>
+      </div>
+    <% } %>
+
+    <% for(let listing of allListings) { %>
+      <div class="listing-card-wrapper">
+        <div class="listing-card-airbnb">
+
+          <!-- Image -->
+          <a href="/listings/<%= listing._id %>">
+            <div class="listing-img-wrapper">
+              <img src="<%= listing.image.url %>" alt="<%= listing.title %>" loading="lazy">
+
+              <!-- Heart Button -->
+              <button class="wishlist-btn" onclick="toggleWishlist(this, event)">
+                <i class="fa-regular fa-heart heart-outline"></i>
+                <i class="fa-solid fa-heart heart-filled"></i>
+              </button>
+            </div>
+          </a>
+
+          <!-- Info -->
+          <a href="/listings/<%= listing._id %>" style="text-decoration:none; color:inherit;">
+            <div class="listing-info">
+              <div class="listing-info-top">
+                <div class="listing-title"><%= listing.title %></div>
+                <div class="listing-rating">
+                  <i class="fa-solid fa-star" style="font-size:0.78rem;"></i>
+                  New
+                </div>
+              </div>
+              <div class="listing-location-text">
+                <%= listing.location %>, <%= listing.country %>
+              </div>
+              <div class="listing-price-text">
+                <strong>₹<%= listing.price.toLocaleString("en-IN") %></strong>/night
+                <span class="tax-info"> &nbsp;+18% GST</span>
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+</div>
+
+<script>
+  // ── Heart / Wishlist Toggle ──
+  function toggleWishlist(btn, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    btn.classList.toggle('active');
+  }
+
+  // ── Tax Toggle ──
+  const taxToggle = document.getElementById("taxToggle");
+  let taxVisible = false;
+
+  taxToggle.addEventListener("click", () => {
+    taxVisible = !taxVisible;
+    const taxInfos = document.getElementsByClassName("tax-info");
+    for(let info of taxInfos) {
+      info.style.display = taxVisible ? "inline" : "none";
+    }
+    taxToggle.classList.toggle("active", taxVisible);
+  });
+</script>

@@ -1,0 +1,379 @@
+<style>
+.tl-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: white;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.tl-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 76px;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 1.5rem;
+}
+
+/* Logo */
+.tl-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fe424d;
+  text-decoration: none;
+  font-family: 'Syne', sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Search bar */
+.tl-search {
+  flex: 1;
+  max-width: 480px;
+}
+
+.tl-search form {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 40px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  overflow: hidden;
+  background: white;
+  transition: box-shadow 0.2s;
+}
+
+.tl-search form:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+}
+
+.tl-search-where {
+  flex: 1;
+  padding: 0.65rem 1.25rem;
+  border-right: 1px solid #ebebeb;
+}
+
+.tl-search-where label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.1rem;
+}
+
+.tl-search-where input {
+  border: none;
+  outline: none;
+  font-size: 0.83rem;
+  color: #222;
+  background: transparent;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tl-search-where input::placeholder { color: #aaa; }
+
+.tl-search-what {
+  padding: 0.65rem 1rem;
+}
+
+.tl-search-what label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.1rem;
+}
+
+.tl-search-what span {
+  font-size: 0.83rem;
+  color: #aaa;
+}
+
+.tl-search-submit {
+  background: #fe424d;
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-right: 0.35rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+
+.tl-search-submit:hover { background: #d63340; }
+
+/* Right nav */
+.tl-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.tl-host-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #222;
+  text-decoration: none;
+  padding: 0.5rem 0.85rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.tl-host-link:hover { background: #f7f7f7; color: #222; }
+
+/* Dark mode toggle */
+#darkToggle {
+  background: none;
+  border: 1px solid #ebebeb;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+#darkToggle:hover { border-color: #222; background: #f7f7f7; }
+
+/* Auth buttons */
+.tl-auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tl-btn-signup {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #222;
+  text-decoration: none;
+  padding: 0.5rem 0.85rem;
+  border-radius: 20px;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.tl-btn-signup:hover { background: #f7f7f7; color: #222; }
+
+.tl-btn-login {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  background: #fe424d;
+  text-decoration: none;
+  padding: 0.5rem 1.1rem;
+  border-radius: 20px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tl-btn-login:hover {
+  background: #d63340;
+  color: white;
+  box-shadow: 0 2px 8px rgba(254,66,77,0.3);
+}
+
+/* User menu dropdown */
+.tl-user-dropdown {
+  position: relative;
+}
+
+.tl-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  padding: 0.35rem 0.5rem 0.35rem 0.85rem;
+  cursor: pointer;
+  background: white;
+  transition: box-shadow 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tl-user-btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.14); }
+
+.tl-user-btn i { color: #717171; font-size: 0.9rem; }
+
+.tl-user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fe424d;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tl-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #ebebeb;
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+  min-width: 200px;
+  overflow: hidden;
+  display: none;
+  z-index: 999;
+}
+
+.tl-dropdown-menu.open { display: block; }
+
+.tl-dropdown-item {
+  display: block;
+  padding: 0.75rem 1.1rem;
+  font-size: 0.88rem;
+  color: #222;
+  text-decoration: none;
+  transition: background 0.15s;
+  font-weight: 500;
+}
+
+.tl-dropdown-item:hover { background: #f7f7f7; color: #222; }
+
+.tl-dropdown-item.bold { font-weight: 700; }
+
+.tl-dropdown-divider {
+  height: 1px;
+  background: #ebebeb;
+  margin: 0.35rem 0;
+}
+
+/* Dark mode */
+body.dark-mode .tl-navbar { background: #0f172a !important; border-bottom-color: #1e293b !important; }
+body.dark-mode .tl-logo { color: #fe424d !important; }
+body.dark-mode .tl-search form { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .tl-search-where { border-right-color: #334155 !important; }
+body.dark-mode .tl-search-where label,
+body.dark-mode .tl-search-what label { color: #e2e8f0 !important; }
+body.dark-mode .tl-search-where input { color: #e2e8f0 !important; }
+body.dark-mode .tl-host-link { color: #e2e8f0 !important; }
+body.dark-mode .tl-host-link:hover { background: #1e293b !important; }
+body.dark-mode #darkToggle { border-color: #334155 !important; color: #e2e8f0 !important; }
+body.dark-mode #darkToggle:hover { background: #1e293b !important; }
+body.dark-mode .tl-btn-signup { color: #e2e8f0 !important; }
+body.dark-mode .tl-btn-signup:hover { background: #1e293b !important; }
+body.dark-mode .tl-user-btn { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .tl-dropdown-menu { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .tl-dropdown-item { color: #e2e8f0 !important; }
+body.dark-mode .tl-dropdown-item:hover { background: #0f172a !important; }
+body.dark-mode .tl-dropdown-divider { background: #334155 !important; }
+
+/* Mobile */
+@media(max-width: 768px) {
+  .tl-search { display: none; }
+  .tl-host-link { display: none; }
+  .tl-nav-inner { padding: 0 1rem; gap: 0.75rem; }
+}
+</style>
+
+<nav class="tl-navbar">
+  <div class="tl-nav-inner">
+
+    <!-- Logo -->
+    <a href="/listings" class="tl-logo">✈️ Travellust</a>
+
+    <!-- Search -->
+    <div class="tl-search">
+      <form action="/listings" method="GET">
+        <div class="tl-search-where">
+          <label>Where</label>
+          <input type="text" name="search" placeholder="Search destinations">
+        </div>
+        <div class="tl-search-what">
+          <label>What</label>
+          <span>Any stay</span>
+        </div>
+        <button type="submit" class="tl-search-submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Right -->
+    <div class="tl-nav-right">
+      <a href="/listings/new" class="tl-host-link">List your property</a>
+
+      <button id="darkToggle" title="Toggle dark mode">🌙</button>
+
+      <% if(typeof currUser === 'undefined' || !currUser) { %>
+        <!-- Not logged in -->
+        <div class="tl-auth-buttons">
+          <a href="/signup" class="tl-btn-signup">Sign up</a>
+          <a href="/login" class="tl-btn-login">Log in</a>
+        </div>
+      <% } else { %>
+        <!-- Logged in — dropdown -->
+        <div class="tl-user-dropdown">
+          <button class="tl-user-btn" onclick="toggleDropdown()" id="userMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+            <div class="tl-user-avatar">
+              <%= currUser.username.charAt(0).toUpperCase() %>
+            </div>
+          </button>
+
+          <div class="tl-dropdown-menu" id="userDropdown">
+            <a href="/profile" class="tl-dropdown-item bold">
+              👤 <%= currUser.username %>
+            </a>
+            <div class="tl-dropdown-divider"></div>
+            <a href="/dashboard" class="tl-dropdown-item">
+              📊 Host Dashboard
+            </a>
+            <a href="/profile" class="tl-dropdown-item">
+              👤 My Profile
+            </a>
+            <a href="/listings/new" class="tl-dropdown-item">
+              ➕ Add Listing
+            </a>
+            <div class="tl-dropdown-divider"></div>
+            <a href="/logout" class="tl-dropdown-item">
+              🚪 Log out
+            </a>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+</nav>
+
+<script>
+  function toggleDropdown() {
+    const menu = document.getElementById("userDropdown");
+    menu.classList.toggle("open");
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", function(e) {
+    const btn = document.getElementById("userMenuBtn");
+    const menu = document.getElementById("userDropdown");
+    if(menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+      menu.classList.remove("open");
+    }
+  });
+</script>

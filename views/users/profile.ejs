@@ -1,0 +1,178 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .profile-header {
+    background: linear-gradient(135deg, #fe424d 0%, #ff6b35 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: white;
+    color: #fe424d;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem auto;
+    font-weight: bold;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fe424d;
+  }
+
+  .stat-label {
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  .info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+    margin-bottom: 1.5rem;
+  }
+
+  .listing-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .booking-item {
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #fe424d;
+  }
+</style>
+
+<div class="container mt-4">
+
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="avatar">
+      <%= currUser.username.charAt(0).toUpperCase() %>
+    </div>
+    <h2><%= user.fullName || user.username %></h2>
+    <p class="mb-1">@<%= user.username %></p>
+    <p class="mb-1">📧 <%= user.email %></p>
+    <% if(user.phone) { %>
+      <p class="mb-1">📱 <%= user.phone %></p>
+    <% } %>
+    <% if(user.bio) { %>
+      <p class="mt-2 mb-0"><i>"<%= user.bio %>"</i></p>
+    <% } %>
+    <a href="/profile/edit" class="btn mt-3" style="background:white; color:#fe424d; border-radius:25px; padding:0.5rem 1.5rem;">
+      ✏️ Edit Profile
+    </a>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-number"><%= myListings.length %></div>
+        <div class="stat-label">🏠 My Listings</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-number"><%= myBookings.length %></div>
+        <div class="stat-label">📅 My Bookings</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-number">⭐</div>
+        <div class="stat-label">Travellust Member</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Listings -->
+  <div class="info-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">🏠 My Listings</h5>
+      <a href="/listings/new" class="btn btn-sm btn-danger">+ Add New</a>
+    </div>
+
+    <% if(myListings.length === 0) { %>
+      <p class="text-muted">No listings yet! <a href="/listings/new">Add your first listing</a></p>
+    <% } %>
+
+    <% for(let listing of myListings) { %>
+      <div class="listing-item">
+        <img src="<%= listing.image.url %>"
+          style="width:80px; height:60px; object-fit:cover; border-radius:8px;">
+        <div class="flex-grow-1">
+          <b><%= listing.title %></b>
+          <p class="mb-0 text-muted" style="font-size:0.85rem;">
+            📍 <%= listing.location %> · ₹<%= listing.price.toLocaleString("en-IN") %>/night
+          </p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+          <a href="/listings/<%= listing._id %>" class="btn btn-sm btn-outline-dark">View</a>
+          <a href="/listings/<%= listing._id %>/edit" class="btn btn-sm btn-dark">Edit</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- My Bookings -->
+  <div class="info-card">
+    <h5 class="mb-3">📅 My Bookings</h5>
+
+    <% if(myBookings.length === 0) { %>
+      <p class="text-muted">No bookings yet! <a href="/listings">Browse listings</a></p>
+    <% } %>
+
+    <% for(let item of myBookings) { %>
+      <div class="booking-item">
+        <div class="row">
+          <div class="col-md-4">
+            <b><%= item.listing.title %></b>
+            <p class="mb-0 text-muted" style="font-size:0.85rem;">
+              📍 <%= item.listing.location %>
+            </p>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Check In</small>
+            <p class="mb-0"><b><%= new Date(item.booking.checkIn).toDateString() %></b></p>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Check Out</small>
+            <p class="mb-0"><b><%= new Date(item.booking.checkOut).toDateString() %></b></p>
+          </div>
+          <div class="col-md-2">
+            <small class="text-muted">Total</small>
+            <p class="mb-0" style="color:#fe424d;"><b>₹<%= item.booking.totalPrice ? item.booking.totalPrice.toLocaleString("en-IN") : 0 %></b></p>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+</div>

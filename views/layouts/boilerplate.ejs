@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travellust</title>
+    <link rel="stylesheet" href="/css/style.css">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+     rel="stylesheet" 
+     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
+     crossorigin="anonymous">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+     <link href="/css/rating.css" rel="stylesheet">
+     <link href="https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.css" rel="stylesheet" />
+     <script src="https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.js"></script>
+
+     <script>
+       // Apply dark mode before page loads to prevent flash
+       if(localStorage.getItem("darkMode") === "true") {
+         document.documentElement.classList.add("dark-mode-early");
+       }
+     </script>
+</head>
+<body>
+    <%- include("../includes/navbar.ejs") %>
+
+    <div class="container">
+        <%- include("../includes/flash.ejs") %>
+        <%- body %>
+    </div>
+
+    <%- include("../includes/footer.ejs") %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/script.js"></script>
+
+    <!-- Dark Mode Script -->
+    <script>
+      const darkToggle = document.getElementById("darkToggle");
+
+      // Load saved preference
+      if(localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+        if(darkToggle) darkToggle.textContent = "☀️ Light";
+      }
+
+      if(darkToggle) {
+        darkToggle.addEventListener("click", () => {
+          document.body.classList.toggle("dark-mode");
+          const isDark = document.body.classList.contains("dark-mode");
+          localStorage.setItem("darkMode", isDark);
+          darkToggle.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+        });
+      }
+    </script>
+
+    <!-- Chatbot + Trip Planner -->
+    <div id="chatbot-container" style="position:fixed; bottom:2rem; right:2rem; z-index:9999;">
+
+      <!-- Chat Window -->
+      <div id="chat-window" style="display:none; width:360px; height:500px; background:white; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.18); flex-direction:column; overflow:hidden;">
+
+        <!-- Header -->
+        <div style="background:#fe424d; color:white; padding:1rem; display:flex; justify-content:space-between; align-items:center;">
+          <span><b>✈️ Travellust Assistant</b></span>
+          <span id="close-chat" style="cursor:pointer; font-size:1.2rem;">✕</span>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display:flex; border-bottom:1px solid #eee;">
+          <button id="tab-chat" onclick="switchTab('chat')"
+            style="flex:1; padding:0.6rem; border:none; background:#fe424d; color:white; font-size:0.85rem; cursor:pointer; font-weight:bold;">
+            💬 Chat
+          </button>
+          <button id="tab-trip" onclick="switchTab('trip')"
+            style="flex:1; padding:0.6rem; border:none; background:#fff; color:#fe424d; font-size:0.85rem; cursor:pointer; font-weight:bold; border-left:1px solid #eee;">
+            🗺️ Trip Planner
+          </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" style="flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:0.5rem; background:#f9f9f9;">
+          <div style="background:#fe424d; color:white; padding:0.6rem 1rem; border-radius:16px 16px 16px 4px; max-width:85%; font-size:0.85rem;">
+            Hi! 👋 I can help you find the perfect place to stay. Ask me anything!
+          </div>
+        </div>
+
+        <!-- Trip Planner Messages -->
+        <div id="trip-messages" style="flex:1; overflow-y:auto; padding:1rem; display:none; flex-direction:column; gap:0.5rem; background:#f9f9f9;">
+          <div style="background:#fe424d; color:white; padding:0.6rem 1rem; border-radius:16px 16px 16px 4px; max-width:85%; font-size:0.85rem;">
+            🗺️ Hi! I am your AI Trip Planner! Tell me your destination, number of days and budget.<br><br>
+            Example: <b>"Plan my 3 day Goa trip under ₹5000"</b>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div style="padding:0.75rem; border-top:1px solid #eee; display:flex; gap:0.5rem; background:white;">
+          <input id="chat-input" type="text" placeholder="Ask me anything..."
+            style="flex:1; border:1px solid #ddd; border-radius:20px; padding:0.5rem 1rem; font-size:0.85rem; outline:none;">
+          <button id="chat-send"
+            style="background:#fe424d; color:white; border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:1rem;">
+            ➤
+          </button>
+        </div>
+      </div>
+
+      <!-- Toggle Button -->
+      <button id="chat-toggle"
+        style="background:#fe424d; color:white; border:none; border-radius:50%; width:56px; height:56px; font-size:1.5rem; cursor:pointer; box-shadow:0 4px 12px rgba(254,66,77,0.4); margin-top:0.5rem; display:block;">
+        💬
+      </button>
+    </div>
+
+    <script>
+      const chatToggle = document.getElementById("chat-toggle");
+      const chatWindow = document.getElementById("chat-window");
+      const closeChat = document.getElementById("close-chat");
+      const chatInput = document.getElementById("chat-input");
+      const chatSend = document.getElementById("chat-send");
+      const chatMessages = document.getElementById("chat-messages");
+      const tripMessages = document.getElementById("trip-messages");
+
+      let currentTab = "chat";
+
+      function switchTab(tab) {
+        currentTab = tab;
+        if (tab === "chat") {
+          chatMessages.style.display = "flex";
+          tripMessages.style.display = "none";
+          document.getElementById("tab-chat").style.background = "#fe424d";
+          document.getElementById("tab-chat").style.color = "white";
+          document.getElementById("tab-trip").style.background = "white";
+          document.getElementById("tab-trip").style.color = "#fe424d";
+          chatInput.placeholder = "Ask me anything...";
+        } else {
+          chatMessages.style.display = "none";
+          tripMessages.style.display = "flex";
+          document.getElementById("tab-trip").style.background = "#fe424d";
+          document.getElementById("tab-trip").style.color = "white";
+          document.getElementById("tab-chat").style.background = "white";
+          document.getElementById("tab-chat").style.color = "#fe424d";
+          chatInput.placeholder = "Plan my 3 day Goa trip under ₹5000...";
+        }
+      }
+
+      chatToggle.addEventListener("click", () => {
+        if (chatWindow.style.display === "none" || chatWindow.style.display === "") {
+          chatWindow.style.display = "flex";
+        } else {
+          chatWindow.style.display = "none";
+        }
+      });
+
+      closeChat.addEventListener("click", () => {
+        chatWindow.style.display = "none";
+      });
+
+      function addMessage(container, message, isUser) {
+        container.innerHTML += `
+          <div style="background:${isUser ? '#333' : '#fe424d'}; color:white; padding:0.6rem 1rem;
+            border-radius:${isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px'};
+            max-width:85%; align-self:${isUser ? 'flex-end' : 'flex-start'};
+            font-size:0.85rem; white-space:pre-wrap; line-height:1.5;">
+            ${message}
+          </div>`;
+        container.scrollTop = container.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        const isTrip = currentTab === "trip";
+        const container = isTrip ? tripMessages : chatMessages;
+        const endpoint = isTrip ? "/listings/tripplanner" : "/listings/chatbot";
+
+        addMessage(container, message, true);
+        chatInput.value = "";
+
+        container.innerHTML += `
+          <div id="typing" style="background:#fe424d; color:white; padding:0.6rem 1rem;
+            border-radius:16px 16px 16px 4px; max-width:85%; font-size:0.85rem;">
+            ${isTrip ? '🗺️ Planning your trip...' : 'Typing...'}
+          </div>`;
+        container.scrollTop = container.scrollHeight;
+
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+          });
+
+          const data = await response.json();
+          document.getElementById("typing").remove();
+          addMessage(container, data.reply, false);
+
+        } catch (err) {
+          document.getElementById("typing").remove();
+          addMessage(container, "Sorry, something went wrong!", false);
+        }
+      }
+
+      chatSend.addEventListener("click", sendMessage);
+      chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+    </script>
+
+</body>
+</html>
